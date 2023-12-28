@@ -1,0 +1,26 @@
+---
+- name: Monitor System
+    hosts: your_remote_host
+        become: yes  # Use sudo for privilege escalation
+
+            tasks:
+                  - name: Get RAM Usage
+                          ansible.builtin.shell: free -m
+                                  register: ram_output
+
+                                        - name: Get Disk Usage
+                                                ansible.builtin.shell: df -h
+                                                        register: disk_output
+
+                                                              - name: Get CPU Usage
+                                                                      ansible.builtin.shell: top -bn1 | grep "Cpu(s)"
+                                                                              register: cpu_output
+
+                                                                                    - name: Display System Information
+                                                                                            ansible.builtin.debug:
+                                                                                                      var: item.stdout_lines
+                                                                                                              loop:
+                                                                                                                        - "RAM Usage: {{ ram_output.stdout_lines | join('\n') }}"
+                                                                                                                                  - "Disk Usage: {{ disk_output.stdout_lines | join('\n') }}"
+                                                                                                                                            - "CPU Usage: {{ cpu_output.stdout_lines | join('\n') }}"
+
